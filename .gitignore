@@ -5,3 +5,5 @@ files/
 test
 test.txt
 *.txt
+
+test.dSYM
