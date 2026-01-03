@@ -1,0 +1,39 @@
+#include <iostream>
+
+using namespace std;
+
+int main(){
+
+    const int rows = 512;
+    const int cols = 512;
+    const int stride = rows / 2;
+
+    int M[rows * cols];
+    int N[rows * cols];
+    int O[rows * cols];
+    
+    for(int i = 0; i < rows * cols; i++){
+        M[i] = i % 10;
+        N[i] = (i + 1) % 10;
+        O[i] = 0;
+    }
+
+    cout << "\n\n" << "Result" << "\n\n";
+
+    auto start = chrono::high_resolution_clock::now();
+    for(int i = 0; i < rows; i++){
+        for(int j = 0; j < cols; j++){
+            int sum = 0;
+            for(int k = 0; k < cols; k++){
+                sum += M[i * stride + k] * N[k * stride + j];
+                //cout << M[i * stride + k] << " " << N[k * stride + j] << " " << sum << endl; 
+                O[i * stride + j] = sum;
+            }
+        }
+    }
+    auto end = chrono::high_resolution_clock::now();
+    auto naive_gemm_time = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+
+    std::cout << "naive GEMM: " << naive_gemm_time << " millioseconds\n";
+
+}
