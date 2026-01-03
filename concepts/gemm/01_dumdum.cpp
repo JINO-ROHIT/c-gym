@@ -43,7 +43,7 @@ int main(){
     auto end = chrono::high_resolution_clock::now();
     auto naive_gemm_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
-    std::cout << "naive GEMM: " << naive_gemm_time << " microseconds\n";
+    cout << "naive GEMM: " << naive_gemm_time << " microseconds\n";
 
     // uncomment to debug the values
     for(int i = 0; i < rows; i++){

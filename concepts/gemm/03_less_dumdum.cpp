@@ -2,6 +2,8 @@
 
 using namespace std;
 
+extern double flops_counter(int size, const string& unit = "gflops");
+
 int main(){
 
     const int rows = 768;
@@ -27,13 +29,13 @@ int main(){
             for(int k = 0; k < cols; k++){
                 sum += M[i * stride + k] * N[k * stride + j];
                 //cout << M[i * stride + k] << " " << N[k * stride + j] << " " << sum << endl; 
-                O[i * stride + j] = sum;
             }
+            O[i * stride + j] = sum;
         }
     }
     auto end = chrono::high_resolution_clock::now();
     auto naive_gemm_time = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
     cout << "naive GEMM: " << naive_gemm_time << " millioseconds\n";
-
+    cout << "total flops: " << flops_counter(rows) << " gflops\n";
 }
