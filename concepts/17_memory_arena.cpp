@@ -1,5 +1,5 @@
 // allocate a large block of memory upfront. whenever memory needed, move the pointer forward, at the end, free the entire arena.
-
+// reference - https://andreleite.com/posts/2025/nstl/virtual-memory-arena-allocator/
 
 #include <iostream>
 #include <unistd.h>
@@ -95,7 +95,7 @@ void printArenaState(Arena* arena, const char* label = "") {
 
 void test_allocations(){
     Arena* arena = createArena(PAGE_SIZE * 4);
-    printArenaState(arena, "Initial");
+    printArenaState(arena, "initial");
 
     void* ptr1 = arenaAlloc(arena, 100);
     std::cout << "\nallocated 100 bytes at: " << ptr1 << "\n";
@@ -112,7 +112,56 @@ void test_allocations(){
     arenaRelease(arena);
 }
 
+void test_edges() {
+    Arena* arena = createArena(PAGE_SIZE * 3); // three pages
+    printArenaState(arena, "initial");
+
+    void* ptr1 = arenaAlloc(arena, PAGE_SIZE - 100); // single page
+    std::cout << "\nallocated " << PAGE_SIZE << " bytes at: " << ptr1 << "\n";
+    printArenaState(arena, "first page");
+
+    void* ptr2 = arenaAlloc(arena, PAGE_SIZE + 100);
+    std::cout << "\nallocated " << PAGE_SIZE + 100 << " bytes at: " << ptr2 << "\n";
+    printArenaState(arena, "should trigger second page");
+
+    arenaRelease(arena);
+}
+
+void test_performance() {
+    const int NUM_ALLOCS = 10000;
+
+    //arena timing
+    auto start = std::chrono::high_resolution_clock::now();
+    Arena* arena = createArena(PAGE_SIZE * 100);
+    for(int i = 0; i < NUM_ALLOCS; i++){
+        arenaAlloc(arena, 64);
+    }
+    auto end = std::chrono::high_resolution_clock::now();
+    auto arena_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    arenaRelease(arena);
+
+    // malloc timing
+    start = std::chrono::high_resolution_clock::now();
+    void* ptrs[NUM_ALLOCS];
+    for (int i = 0; i < NUM_ALLOCS; i++) {
+        ptrs[i] = malloc(64);
+    }
+    for (int i = 0; i < NUM_ALLOCS; i++) {
+        free(ptrs[i]);
+    }
+    end = std::chrono::high_resolution_clock::now();
+    auto malloc_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+    std::cout << "allocating " << NUM_ALLOCS << " blocks of 64 bytes:\n";
+    std::cout << "arena allocator: " << arena_time << " micro seconds\n";
+    std::cout << "malloc/free:     " << malloc_time << " micro seconds\n";
+    std::cout << "speedup:         " << (malloc_time / (double)arena_time) << "x\n";
+}
 
 int main(){
-    test_allocations();
+    //test_allocations();
+
+    //test_edges();
+
+    test_performance();
 }
