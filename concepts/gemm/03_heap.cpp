@@ -2,17 +2,15 @@
 
 using namespace std;
 
-extern double flops_counter(int size, const string& unit = "gflops");
-
 int main(){
 
-    const int rows = 768;
-    const int cols = 768;
+    const int rows = 2048;
+    const int cols = 2048;
     const int stride = cols;
 
-    int M[rows * cols];
-    int N[rows * cols];
-    int O[rows * cols];
+    int* M = new int[rows * cols];
+    int* N = new int[rows * cols];
+    int* O = new int[rows * cols];
     
     for(int i = 0; i < rows * cols; i++){
         M[i] = i % 10;
@@ -37,5 +35,4 @@ int main(){
     auto naive_gemm_time = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
     cout << "naive GEMM: " << naive_gemm_time << " millioseconds\n";
-    cout << "total flops: " << flops_counter(rows) << " gflops\n";
 }
