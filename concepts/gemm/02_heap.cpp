@@ -4,9 +4,9 @@ using namespace std;
 
 int main(){
 
-    const int rows = 1024;
-    const int cols = 1024;
-    const int stride = rows / 2;
+    const int rows = 2048;
+    const int cols = 2048;
+    const int stride = cols;
 
     int* M = new int[rows * cols];
     int* N = new int[rows * cols];

@@ -6,7 +6,7 @@ int main(){
 
     const int rows = 768;
     const int cols = 768;
-    const int stride = rows / 2;
+    const int stride = cols;
 
     int M[rows * cols];
     int N[rows * cols];
