@@ -152,6 +152,7 @@ void test_performance() {
     end = std::chrono::high_resolution_clock::now();
     auto malloc_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
+    std::cout << "\n\n";
     std::cout << "allocating " << NUM_ALLOCS << " blocks of 64 bytes:\n";
     std::cout << "arena allocator: " << arena_time << " micro seconds\n";
     std::cout << "malloc/free:     " << malloc_time << " micro seconds\n";
@@ -159,9 +160,9 @@ void test_performance() {
 }
 
 int main(){
-    //test_allocations();
+    test_allocations();
 
-    //test_edges();
+    test_edges();
 
     test_performance();
 }
