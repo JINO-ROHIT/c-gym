@@ -30,6 +30,4 @@ int main(){
     y << 1;
     cout << y << endl;
 
-
-
 }
